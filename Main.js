@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import * as Animatable from 'react-native-animatable';
 import Button from './Button';
 import {
   pressNum, clear, enter, operation, swap,
@@ -58,60 +59,84 @@ const styles = StyleSheet.create({
   },
 });
 
-const Main = ({
-  calculatorState: { stack, inputState },
-  pressNumWithDispatch,
-  enterAction,
-  operationAction,
-  clearAction,
-  swapAction,
-}) => (
-  <View style={styles.container}>
-    <View style={styles.top}>
-      <View style={styles.numberWrapper}>
-        <Text style={styles.append}>{stack[2] || 0}</Text>
-      </View>
-      <View style={styles.numberWrapper}>
-        <Text style={styles.append}>{stack[1] || 0}</Text>
-      </View>
-      <View style={styles.numberWrapper}>
-        <Text style={styles[inputState]}>{stack[0] || 0}</Text>
-      </View>
-    </View>
-    <View style={styles.bottom}>
-      <View style={styles.row}>
-        <Button text="clear" onPress={clearAction} />
-        <Button text="pow" onPress={operationAction} />
-        <Button text="swap" onPress={swapAction} />
-        <Button text="/" onPress={operationAction} />
-      </View>
-      <View style={styles.row}>
-        <Button text="9" onPress={pressNumWithDispatch} />
-        <Button text="8" onPress={pressNumWithDispatch} />
-        <Button text="7" onPress={pressNumWithDispatch} />
-        <Button text="x" onPress={operationAction} />
-      </View>
-      <View style={styles.row}>
-        <Button text="6" onPress={pressNumWithDispatch} />
-        <Button text="5" onPress={pressNumWithDispatch} />
-        <Button text="4" onPress={pressNumWithDispatch} />
-        <Button text="-" onPress={operationAction} />
-      </View>
-      <View style={styles.row}>
-        <Button text="3" onPress={pressNumWithDispatch} />
-        <Button text="2" onPress={pressNumWithDispatch} />
-        <Button text="1" onPress={pressNumWithDispatch} />
-        <Button text="+" onPress={operationAction} />
-      </View>
-      <View style={styles.row}>
-        <Button text="0" onPress={pressNumWithDispatch} />
-        <Button text="." />
-        <Button text="enter" special onPress={enterAction} />
-      </View>
-    </View>
-  </View>
-);
+class Main extends React.PureComponent {
+  render() {
+    const {
+      calculatorState: { stack, inputState },
+      pressNumWithDispatch,
+      enterAction,
+      operationAction,
+      clearAction,
+      swapAction,
+    } = this.props;
 
+    return (
+      <View style={styles.container}>
+        <View style={styles.top}>
+          <View style={styles.numberWrapper}>
+            <Text style={styles.append}>{stack[2] || 0}</Text>
+          </View>
+          <View style={styles.numberWrapper}>
+            <Animatable.Text style={styles.append}>{stack[1] || 0}</Animatable.Text>
+          </View>
+          <View style={styles.numberWrapper}>
+            <Animatable.Text
+              ref={(el) => {
+                this.text1 = el;
+              }}
+              style={styles[inputState]}
+            >
+              {stack[0] || 0}
+            </Animatable.Text>
+          </View>
+        </View>
+        <View style={styles.bottom}>
+          <View style={styles.row}>
+            <Button text="clear" onPress={clearAction} />
+            <Button text="pow" onPress={operationAction} />
+            <Button text="swap" onPress={swapAction} />
+            <Button text="/" onPress={operationAction} />
+          </View>
+          <View style={styles.row}>
+            <Button text="9" onPress={pressNumWithDispatch} />
+            <Button text="8" onPress={pressNumWithDispatch} />
+            <Button text="7" onPress={pressNumWithDispatch} />
+            <Button text="x" onPress={operationAction} />
+          </View>
+          <View style={styles.row}>
+            <Button text="6" onPress={pressNumWithDispatch} />
+            <Button text="5" onPress={pressNumWithDispatch} />
+            <Button text="4" onPress={pressNumWithDispatch} />
+            <Button
+              text="-"
+              onPress={(x) => {
+                operationAction(x);
+                this.text1.flash(500);
+              }}
+            />
+          </View>
+          <View style={styles.row}>
+            <Button text="3" onPress={pressNumWithDispatch} />
+            <Button text="2" onPress={pressNumWithDispatch} />
+            <Button text="1" onPress={pressNumWithDispatch} />
+            <Button
+              text="+"
+              onPress={(x) => {
+                operationAction(x);
+                this.text1.flash(500);
+              }}
+            />
+          </View>
+          <View style={styles.row}>
+            <Button text="0" onPress={pressNumWithDispatch} />
+            <Button text="." />
+            <Button text="enter" special onPress={enterAction} />
+          </View>
+        </View>
+      </View>
+    );
+  }
+}
 const mapStateToProps = state => ({
   calculatorState: state,
 });

@@ -1,8 +1,7 @@
 import React from 'react';
-import {
-  StyleSheet, TouchableOpacity, Text, View,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import PropTypes from 'prop-types';
+import * as Animatable from 'react-native-animatable';
 
 const baseStyles = {
   alignItems: 'center',
@@ -35,14 +34,30 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
 });
-const Button = ({ text, special, onPress }) => (
-  <TouchableOpacity
-    onPress={() => onPress(text)}
-    style={special ? styles.specialContainer : styles.container}
-  >
-    <Text style={special ? styles.textSpecial : styles.text}>{text}</Text>
-  </TouchableOpacity>
-);
+class Button extends React.PureComponent {
+  render() {
+    const { text, special, onPress } = this.props;
+
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          onPress(text);
+          this.text.rubberBand(400);
+        }}
+        style={special ? styles.specialContainer : styles.container}
+      >
+        <Animatable.Text
+          ref={(el) => {
+            this.text = el;
+          }}
+          style={special ? styles.textSpecial : styles.text}
+        >
+          {text}
+        </Animatable.Text>
+      </TouchableOpacity>
+    );
+  }
+}
 
 Button.propTypes = {
   text: PropTypes.string,
