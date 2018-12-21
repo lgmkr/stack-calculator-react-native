@@ -74,13 +74,18 @@ class Main extends React.PureComponent {
       <View style={styles.container}>
         <View style={styles.top}>
           <View style={styles.numberWrapper}>
-            <Text style={styles.append}>{stack[2] || 0}</Text>
+            <Text numberOfLines={1} style={styles.append}>
+              {stack[2] || 0}
+            </Text>
           </View>
           <View style={styles.numberWrapper}>
-            <Animatable.Text style={styles.append}>{stack[1] || 0}</Animatable.Text>
+            <Animatable.Text numberOfLines={1} style={styles.append}>
+              {stack[1] || 0}
+            </Animatable.Text>
           </View>
           <View style={styles.numberWrapper}>
             <Animatable.Text
+              numberOfLines={1}
               ref={(el) => {
                 this.text1 = el;
               }}
